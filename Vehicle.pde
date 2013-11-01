@@ -13,8 +13,11 @@ class Vehicle {
   float wandertheta;
   float maxforce;    // Maximum steering force
   float maxspeed;    // Maximum speed
+  int red;           // red
+  int green;         // green
+  int blue;          // blue
 
-  Vehicle(float x, float y) {
+  Vehicle(float x, float y, int red, int green, int blue) {
     acceleration = new PVector(0,0);
     velocity = new PVector(0,0);
     location = new PVector(x,y);
@@ -22,6 +25,9 @@ class Vehicle {
     wandertheta = 0;
     maxspeed = 2;
     maxforce = 0.05;
+    this.red = red;
+    this.green = green;
+    this.blue = blue;
   }
 
   void run() {
@@ -87,8 +93,8 @@ class Vehicle {
   void display() {
     // Draw a triangle rotated in the direction of velocity
     float theta = velocity.heading2D() + radians(90);
-    fill(127);
-    stroke(0);
+    fill(red, green, blue);
+    stroke(255 - red, 255 - green, 255 - blue);
     pushMatrix();
     translate(location.x,location.y);
     rotate(theta);
@@ -107,12 +113,19 @@ class Vehicle {
     if (location.x > width+r) location.x = -r;
     if (location.y > height+r) location.y = -r;
   }
+
+  void drawCircleAround(float rad) {
+    stroke(255); 
+    noFill();
+    ellipseMode(CENTER);
+    ellipse(location.x, location.y, rad*2, rad*2);
+  }
 }
 
 
 // A method just to draw the circle associated with wandering
 void drawWanderStuff(PVector location, PVector circle, PVector target, float rad) {
-  stroke(0); 
+  stroke(255); 
   noFill();
   ellipseMode(CENTER);
   ellipse(circle.x,circle.y,rad*2,rad*2);
@@ -120,4 +133,6 @@ void drawWanderStuff(PVector location, PVector circle, PVector target, float rad
   line(location.x,location.y,circle.x,circle.y);
   line(circle.x,circle.y,target.x,target.y);
 }
+
+
 
