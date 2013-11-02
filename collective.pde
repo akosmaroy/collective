@@ -1,4 +1,3 @@
-// Click mouse to turn on and off debug visualization
 import peasy.*;
 
 int NO_ELEMENTS = 15;
@@ -15,7 +14,7 @@ PeasyCam camera;
 boolean debug = false;
 
 void setup() {
-  size(1024, 768, P3D);
+  size(1024, 768, OPENGL);
   
   camera = new PeasyCam(this, width/2, height/2, 0, 1000);
   camera.setMinimumDistance(1);
