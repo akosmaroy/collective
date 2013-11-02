@@ -10,13 +10,22 @@
 int NO_ELEMENTS = 10;
 float NEIGHBOR_DIST = 50;
 ArrayList<Vehicle> collective;
-float dist[];
+TriangularMatrix<Float> dist;
+TriangularMatrix<Boolean> inExchange;
 boolean debug = false;
 
 void setup() {
   size(1024, 768);
   
-  dist = new float[NO_ELEMENTS * (NO_ELEMENTS+1) / 2];
+  dist = new TriangularMatrix<Float>(NO_ELEMENTS);
+  
+  inExchange = new TriangularMatrix<Boolean>(NO_ELEMENTS);
+  for (int i = 0; i < NO_ELEMENTS; ++i) {
+    for (int j = i + 1; j < NO_ELEMENTS; ++j) {
+      inExchange.set(i, j, false);
+    }
+  }
+      
   collective = new ArrayList<Vehicle>();
   for (int i = 0; i < NO_ELEMENTS; ++i) {
     collective.add(new Vehicle(random(width), random(height),
@@ -32,6 +41,7 @@ void draw() {
     v.red = (int) random(255);
     v.green = (int) random(255);
     v.blue = (int) random(255);
+    v.drawCircleAround(NEIGHBOR_DIST / 2);
   }
   
   calcDist();
@@ -49,33 +59,39 @@ void mousePressed() {
 }
 
 void calcDist() {
-  int ix = 0;
   for (int i = 0; i < NO_ELEMENTS; ++i) {
     Vehicle v1 = collective.get(i);
     for (int j = i + 1; j < NO_ELEMENTS; ++j) {
       Vehicle v2 = collective.get(j);
       float d = v1.location.dist(v2.location);
-      dist[ix++] = d;
+      dist.set(i, j, d);
     }
   } 
 }
 
 void exchangeInfo() {
-  int ix = 0;
   for (int i = 0; i < NO_ELEMENTS; ++i) {
     for (int j = i + 1; j < NO_ELEMENTS; ++j) {
-      if (dist[ix++] < NEIGHBOR_DIST) {
-        Vehicle v1 = collective.get(i);
-        Vehicle v2 = collective.get(j);
-        
+      Vehicle v1 = collective.get(i);
+      Vehicle v2 = collective.get(j);
+          
+      if (dist.get(i, j) < NEIGHBOR_DIST) {
+        if (!inExchange.get(i, j)) {
+          // push or pull?
+          if (random(2) < 1) {
+            exchangeInfo(v1, v2);
+          } else {
+            exchangeInfo(v2, v1);
+          }
+          inExchange.set(i, j, true);
+        }        
+      } else if (inExchange.get(i, j)) {
+        inExchange.set(i, j, false);
+      }
+      
+      if (inExchange.get(i, j)) {
         v1.drawCircleAround(NEIGHBOR_DIST);
         v2.drawCircleAround(NEIGHBOR_DIST);
-
-        if (random(2) < 1) {
-          exchangeInfo(v1, v2);
-        } else {
-          exchangeInfo(v2, v1);
-        }        
       }
     }
   } 
