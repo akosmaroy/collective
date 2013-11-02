@@ -15,6 +15,9 @@ boolean debug = false;
 
 void setup() {
   size(1024, 768, OPENGL);
+  if (frame != null) {
+    frame.setResizable(true);
+  }
   
   camera = new PeasyCam(this, width/2, height/2, 0, 1000);
   camera.setMinimumDistance(1);
@@ -40,7 +43,13 @@ void setup() {
   exStrat = new RandomExchangeStrategy();
 }
 
+
 void draw() {
+  directionalLight(255, 255, 255,   // color
+                   0, 0, -1);        // direction
+  directionalLight(128, 128, 128,   // color
+                   1, 0, 0);        // direction
+  
   background(0);
   drawGrid();
 
@@ -85,8 +94,11 @@ void drawGrid() {
 }
 
 void keyPressed() {
-  if (keyCode == ' ') {
-    camera.reset();
+  switch (keyCode) {
+    case ' ':
+      camera.reset();
+      break;
+    default:
   }
 }
 

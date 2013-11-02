@@ -14,8 +14,8 @@ class Vehicle3D extends Vehicle {
     float r = (Float) state.get("r");
     float res = (Float) state.get("res");
     
-    noFill();
     stroke(red, green, blue);
+    fill(red, green, blue, 128);
     pushMatrix();
     translate(location.x, location.y, 0);
     rotate(theta);
