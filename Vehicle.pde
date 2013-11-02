@@ -21,6 +21,15 @@ class Vehicle {
     
     state = new HashMap<String, Object>();
   }
+  
+  void randomizeState() {
+    state.put("red", (float) random(255));
+    state.put("green", (float) random(255));
+    state.put("blue", (float) random(255));
+    state.put("r", (float) random(15));
+    state.put("width", (float) random(5));
+    state.put("res", (float) random(20));
+  }
 
   void run() {
     update();
