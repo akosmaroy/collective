@@ -90,9 +90,11 @@ class Vehicle {
     float green = (Float) state.get("green");
     float blue = (Float) state.get("blue");
     float r = (Float) state.get("r");
+    float strokeWidth = (Float) state.get("width");
     
     fill(red, green, blue);
     stroke(255 - red, 255 - green, 255 - blue);
+    strokeWeight(strokeWidth);
     pushMatrix();
     translate(location.x,location.y);
     rotate(theta);
@@ -102,6 +104,9 @@ class Vehicle {
     vertex(r, r*2);
     endShape();
     popMatrix();
+    
+    // reset stroke weight
+    strokeWeight(1);
   }
 
   // Wraparound

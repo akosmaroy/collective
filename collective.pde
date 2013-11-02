@@ -28,6 +28,7 @@ void setup() {
     v.state.put("green", (float) random(255));
     v.state.put("blue", (float) random(255));
     v.state.put("r", (float) random(15));
+    v.state.put("width", (float) random(5));
     
     collective.add(v);
   }
@@ -45,6 +46,7 @@ void draw() {
     v.state.put("green", (float) random(255));
     v.state.put("blue", (float) random(255));
     v.state.put("r", (float) random(15));
+    v.state.put("width", (float) random(5));
     
     v.drawCircleAround(NEIGHBOR_DIST / 2);
   }
@@ -82,13 +84,12 @@ void exchangeInfo() {
       Relation r = relations.get(i, j);
       
       exStrat.exchangeInfo(peerStrat, v1, v2, r);
-          
+      
       if (r.inExchange) {
         v1.drawCircleAround(NEIGHBOR_DIST);
         v2.drawCircleAround(NEIGHBOR_DIST);
-      }
+      }      
     }
-  } 
+  }
 }
-
 
