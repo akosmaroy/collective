@@ -23,12 +23,17 @@ void setup() {
       
   collective = new ArrayList<Vehicle>();
   for (int i = 0; i < NO_ELEMENTS; ++i) {
-    collective.add(new Vehicle(random(width), random(height),
-                   (int) random(255), (int) random(255), (int) random(255)));
+    Vehicle v = new Vehicle(random(width), random(height));
+    v.state.put("red", (float) random(255));
+    v.state.put("green", (float) random(255));
+    v.state.put("blue", (float) random(255));
+    v.state.put("r", (float) random(15));
+    
+    collective.add(v);
   }
   
   peerStrat = new DistancePeerStrategy(NEIGHBOR_DIST);
-  exStrat = new RgbExchangeStrategy();
+  exStrat = new RandomExchangeStrategy();
 }
 
 void draw() {
@@ -36,9 +41,11 @@ void draw() {
   
   if (random(50) < 1) {
     Vehicle v = collective.get((int) random(NO_ELEMENTS));
-    v.red = (int) random(255);
-    v.green = (int) random(255);
-    v.blue = (int) random(255);
+    v.state.put("red", (float) random(255));
+    v.state.put("green", (float) random(255));
+    v.state.put("blue", (float) random(255));
+    v.state.put("r", (float) random(15));
+    
     v.drawCircleAround(NEIGHBOR_DIST / 2);
   }
   

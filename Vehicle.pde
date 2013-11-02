@@ -7,21 +7,19 @@ class Vehicle {
   float wandertheta;
   float maxforce;    // Maximum steering force
   float maxspeed;    // Maximum speed
-  int red;           // red
-  int green;         // green
-  int blue;          // blue
 
-  Vehicle(float x, float y, int red, int green, int blue) {
+  HashMap<String, Object> state;
+
+
+  Vehicle(float x, float y) {
     acceleration = new PVector(0,0);
     velocity = new PVector(0,0);
     location = new PVector(x,y);
-    r = 6;
     wandertheta = 0;
     maxspeed = 2;
     maxforce = 0.05;
-    this.red = red;
-    this.green = green;
-    this.blue = blue;
+    
+    state = new HashMap<String, Object>();
   }
 
   void run() {
@@ -87,6 +85,12 @@ class Vehicle {
   void display() {
     // Draw a triangle rotated in the direction of velocity
     float theta = velocity.heading2D() + radians(90);
+    
+    float red = (Float) state.get("red");
+    float green = (Float) state.get("green");
+    float blue = (Float) state.get("blue");
+    float r = (Float) state.get("r");
+    
     fill(red, green, blue);
     stroke(255 - red, 255 - green, 255 - blue);
     pushMatrix();
