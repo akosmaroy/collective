@@ -47,7 +47,7 @@ class TriangularMatrix<E> {
    *
    *  @param x one of the indexes
    *  @param y the other index
-   *  @return the old value for the index
+   *  @return the value for the index
    */
   E get(int x, int y) {
     int ix = calcIndex(x, y);

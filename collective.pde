@@ -1,28 +1,23 @@
-// The Nature of Code
-// Daniel Shiffman
-// http://natureofcode.com
-
-// Demonstration of Craig Reynolds' "Wandering" behavior
-// See: http://www.red3d.com/cwr/
-
-// Click mouse to turn on and off rendering of the wander circle
+// Click mouse to turn on and off debug visualization
 
 int NO_ELEMENTS = 10;
 float NEIGHBOR_DIST = 50;
+
 ArrayList<Vehicle> collective;
-TriangularMatrix<Float> dist;
-TriangularMatrix<Boolean> inExchange;
+TriangularMatrix<Relation> relations;
+
+PeerStrategy peerStrat;
+ExchangeStrategy exStrat;
+
 boolean debug = false;
 
 void setup() {
   size(1024, 768);
   
-  dist = new TriangularMatrix<Float>(NO_ELEMENTS);
-  
-  inExchange = new TriangularMatrix<Boolean>(NO_ELEMENTS);
+  relations = new TriangularMatrix<Relation>(NO_ELEMENTS);
   for (int i = 0; i < NO_ELEMENTS; ++i) {
     for (int j = i + 1; j < NO_ELEMENTS; ++j) {
-      inExchange.set(i, j, false);
+      relations.set(i, j, new Relation());
     }
   }
       
@@ -31,6 +26,9 @@ void setup() {
     collective.add(new Vehicle(random(width), random(height),
                    (int) random(255), (int) random(255), (int) random(255)));
   }
+  
+  peerStrat = new DistancePeerStrategy(NEIGHBOR_DIST);
+  exStrat = new RgbExchangeStrategy();
 }
 
 void draw() {
@@ -44,7 +42,7 @@ void draw() {
     v.drawCircleAround(NEIGHBOR_DIST / 2);
   }
   
-  calcDist();
+  updateRelations();
   exchangeInfo();
   
   for (Vehicle wanderer : collective) {
@@ -58,13 +56,13 @@ void mousePressed() {
   debug = !debug;
 }
 
-void calcDist() {
+void updateRelations() {
   for (int i = 0; i < NO_ELEMENTS; ++i) {
     Vehicle v1 = collective.get(i);
     for (int j = i + 1; j < NO_ELEMENTS; ++j) {
       Vehicle v2 = collective.get(j);
       float d = v1.location.dist(v2.location);
-      dist.set(i, j, d);
+      relations.get(i, j).distance = d;
     }
   } 
 }
@@ -74,22 +72,11 @@ void exchangeInfo() {
     for (int j = i + 1; j < NO_ELEMENTS; ++j) {
       Vehicle v1 = collective.get(i);
       Vehicle v2 = collective.get(j);
-          
-      if (dist.get(i, j) < NEIGHBOR_DIST) {
-        if (!inExchange.get(i, j)) {
-          // push or pull?
-          if (random(2) < 1) {
-            exchangeInfo(v1, v2);
-          } else {
-            exchangeInfo(v2, v1);
-          }
-          inExchange.set(i, j, true);
-        }        
-      } else if (inExchange.get(i, j)) {
-        inExchange.set(i, j, false);
-      }
+      Relation r = relations.get(i, j);
       
-      if (inExchange.get(i, j)) {
+      exStrat.exchangeInfo(peerStrat, v1, v2, r);
+          
+      if (r.inExchange) {
         v1.drawCircleAround(NEIGHBOR_DIST);
         v2.drawCircleAround(NEIGHBOR_DIST);
       }
@@ -97,19 +84,4 @@ void exchangeInfo() {
   } 
 }
 
-void exchangeInfo(Vehicle v1, Vehicle v2) {
-  float r = random(4);
-  switch ((int) r) {
-    case 0:
-      v2.red = v1.red;
-      break;
-    case 1:
-      v2.green = v1.green;
-      break;
-    case 2:
-      v2.blue = v1.blue;
-      break;
-    default:
-  }
-}
 
