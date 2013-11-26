@@ -30,10 +30,12 @@ void setup() {
       relations.set(i, j, new Relation());
     }
   }
+  
+  PShape shape = loadShape("vehicle.svg");
       
   collective = new ArrayList<Vehicle>();
   for (int i = 0; i < NO_ELEMENTS; ++i) {
-    Vehicle3D v = new Vehicle3D(random(width), random(height));
+    Vehicle3D v = new Vehicle3D(shape, random(width), random(height));
     v.randomizeState();
     
     collective.add(v);
@@ -50,7 +52,7 @@ void draw() {
   directionalLight(128, 128, 128,   // color
                    1, 0, 0);        // direction
   
-  background(0);
+  background(51);
   drawGrid();
 
   // randomlize an entity every once in a while  

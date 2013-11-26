@@ -9,9 +9,13 @@ class Vehicle {
   float maxspeed;    // Maximum speed
 
   HashMap<String, Object> state;
+  
+  PShape shape;
 
 
-  Vehicle(float x, float y) {
+  Vehicle(PShape shape, float x, float y) {
+    this.shape = shape;
+    
     acceleration = new PVector(0,0);
     velocity = new PVector(0,0);
     location = new PVector(x,y);
@@ -26,9 +30,6 @@ class Vehicle {
     state.put("red", (float) random(255));
     state.put("green", (float) random(255));
     state.put("blue", (float) random(255));
-    state.put("r", (float) random(15));
-    state.put("width", (float) random(5));
-    state.put("res", (float) random(20));
   }
 
   void run() {
