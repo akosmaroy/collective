@@ -12,6 +12,8 @@ class Vehicle3D extends Vehicle {
     float green = (Float) state.get("green");
     float blue = (Float) state.get("blue");
     
+    hint(DISABLE_DEPTH_TEST); // avoids z-fighting
+    
     pushMatrix();
     
     stroke(red, green, blue);
