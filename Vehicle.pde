@@ -30,6 +30,9 @@ class Vehicle {
     state.put("red", (float) random(255));
     state.put("green", (float) random(255));
     state.put("blue", (float) random(255));
+    state.put("a", (float) random(255));
+    state.put("b", (float) random(255));
+    state.put("c", (float) random(255));
   }
 
   void run() {
