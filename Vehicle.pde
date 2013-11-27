@@ -1,3 +1,5 @@
+import java.util.TreeMap;
+
 class Vehicle {
 
   PVector location;
@@ -8,7 +10,10 @@ class Vehicle {
   float maxforce;    // Maximum steering force
   float maxspeed;    // Maximum speed
 
-  HashMap<String, Object> state;
+  TreeMap<String, Object> state;
+  ArrayList<String> highlights;
+  int highlightEnd;
+  
   
   PShape shape;
 
@@ -23,7 +28,9 @@ class Vehicle {
     maxspeed = 2;
     maxforce = 0.05;
     
-    state = new HashMap<String, Object>();
+    state = new TreeMap<String, Object>();
+    highlights = new ArrayList<String>();
+    highlightEnd = 0;
   }
   
   void randomizeState() {
@@ -33,6 +40,10 @@ class Vehicle {
     state.put("a", (float) random(255));
     state.put("b", (float) random(255));
     state.put("c", (float) random(255));
+    
+    highlights.clear();
+    highlights.addAll(state.keySet());
+    highlightEnd = millis() + 2000;
   }
 
   void run() {

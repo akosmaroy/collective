@@ -1,3 +1,5 @@
+import java.util.Set;
+
 class Vehicle3D extends Vehicle {
 
   Vehicle3D(PShape shape, float x, float y) {
@@ -19,7 +21,7 @@ class Vehicle3D extends Vehicle {
     stroke(red, green, blue);
     fill(red, green, blue, 128);
     translate(location.x, location.y, 0);
-    rotate(theta);
+    //rotate(theta);
     
     /*
     // this is the sphere display
@@ -32,13 +34,7 @@ class Vehicle3D extends Vehicle {
     //drawBars(red, green, blue);
     
     // draw the radar chart
-    Object v[] = state.values().toArray();
-    float values[] = new float[v.length];
-    for (int i = 0; i < state.values().size(); ++i) {
-      values[i] = ((Float) v[i]) / 255.0;
-    }
-    
-    drawRadarChart(values, 50);
+    drawRadarChart(50);
     
 
     popMatrix();
@@ -94,11 +90,11 @@ class Vehicle3D extends Vehicle {
   /**
    *  Draw a radar chart, with the specified radius.
    *
-   *  @param values the values to draw, which are normalized between 0..1
    *  @param r the radius of the chart
    */
-  void drawRadarChart(float[] values, float r) {
-    float theta = TWO_PI / values.length;
+  void drawRadarChart(float r) {
+    Set<String> keys = state.keySet();
+    float theta = TWO_PI / keys.size();
     
     strokeWeight(2);
     stroke(0, 177, 255, 255);
@@ -106,10 +102,11 @@ class Vehicle3D extends Vehicle {
 
     // draw the radar chart as splines    
     beginShape();
+    String keyArray[] = keys.toArray(new String[0]);
     float alpha = 0;
     // overindexing so that the curve is closed
-    for (int i = 0; i < values.length + 3; ++i, alpha += theta) {
-      float v = values[i % values.length] * r;
+    for (int i = 0; i < keyArray.length + 3; ++i, alpha += theta) {
+      float v = ((Float) state.get(keyArray[i % keyArray.length])) * r / 255.0;
       float x = sin(alpha) * v;
       float y = -cos(alpha) * v;
       
@@ -122,7 +119,7 @@ class Vehicle3D extends Vehicle {
     stroke(150, 150, 150, 150);
     beginShape(LINES);
     alpha = 0;
-    for (int i = 0; i < values.length; ++i, alpha += theta) {
+    for (int i = 0; i < keyArray.length; ++i, alpha += theta) {
       float x = sin(alpha) * r;
       float y = -cos(alpha) * r;
       
@@ -138,6 +135,32 @@ class Vehicle3D extends Vehicle {
     for (int i = 0; i <= 5; ++i) {
       float s = 2 * r * ((float) i) / 5;
       ellipse(0, 0, s, s); 
+    }
+    
+    // draw highlights if applicable
+    int now = millis();
+    if (now < highlightEnd) {
+      strokeWeight(2);
+      stroke(255, 255, 255, 255);
+      beginShape(LINES);
+      for (String h : highlights) {
+        // determine the index of this key
+        int ix = 0;
+        for (; ix < keyArray.length; ++ix) {
+          if (keyArray[ix] == h) {
+            break;
+          }
+        }
+        float v = ((Float) state.get(h)) * r / 255.0;
+        float x = sin(ix * theta) * v;
+        float y = -cos(ix * theta) * v;
+      
+        vertex(0, 0);
+        vertex(x, y);
+      }
+      endShape();
+    } else {
+      highlights.clear();
     }
     
   }

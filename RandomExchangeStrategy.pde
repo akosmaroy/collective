@@ -19,11 +19,18 @@ class RandomExchangeStrategy implements ExchangeStrategy {
 
 
   void exchangeInfo(Vehicle v1, Vehicle v2) {
+    int now = millis();
+    if (now < v2.highlightEnd) {
+      return;
+    }
+    
     Object keys[] = v1.state.keySet().toArray();
     float r = random(keys.length + 1);
     if (r < keys.length) {
       String key = (String) keys[(int) r];
       v2.state.put(key, v1.state.get(key));
+      v2.highlights.add(key);
+      v2.highlightEnd = millis() + 2000;
     }
   }
 
